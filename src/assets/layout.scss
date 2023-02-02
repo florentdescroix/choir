@@ -1,0 +1,176 @@
+/******
+This file is part of Choir, a colaborative repository for choir lyrics.
+Copyright (C) 2023 – Florent Descroix <florentdescroix@posteo.net>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*****/
+
+#app {
+  width: 100vw;
+  height: 100vh;
+  overflow: auto;
+
+  > header,
+  > #content {
+    display: flex;
+    min-width: var(--max-col-width);
+  }
+
+  > header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: var(--header-height);
+    padding: 0 5px;
+    overflow: hidden;
+    background: white;
+    z-index: 100;
+
+    > div {
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    > .center {
+      justify-content: center;
+    }
+
+    > .left {
+      justify-content: start;
+    }
+
+    > .right {
+      justify-content: end;
+    }
+  }
+
+  > footer {
+    position: fixed;
+    height: var(--footer-height);
+  }
+
+  > #content {
+    min-height: calc(100vh - var(--header-height));
+    margin-top: var(--header-height);
+
+    > main,
+    > nav,
+    > aside {
+      //box-shadow: 0 0 10px grey;
+      padding: 20px;
+    }
+
+    > nav,
+    > aside {
+      display: flex;
+      position: sticky;
+      top: var(--header-height);
+      flex-direction: column;
+      max-height: 0;
+      background: white;
+      flex: 0.5;
+      min-width: var(--min-col-width);
+      max-width: var(--max-col-width);
+      min-height: inherit;
+      overflow: auto;
+      z-index: 99;
+
+      * {
+        max-width: 100%;
+      }
+
+      footer {
+        flex-wrap: wrap;
+      }
+    }
+
+    > main {
+      flex: 1;
+      .sticky-main {
+        position: sticky;
+        left: calc(var(--min-col-width) + 20px);
+        max-width: calc(100vw - 2 * var(--min-col-width) - 40px);
+      }
+    }
+
+    > nav {
+      left: 0;
+    }
+
+    > aside {
+      right: 0;
+    }
+  }
+}
+
+@media (max-width: 1080px) {
+  #app {
+    > #content {
+      > main {
+        .sticky-main {
+          left: 20px;
+          max-width: calc(100vw - var(--min-col-width) - 40px);
+        }
+      }
+      > nav,
+      > aside {
+        &:empty {
+          display: none;
+        }
+      }
+
+      > nav {
+        &:not(:empty) {
+          @include floatingMenu(left);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  #app {
+    > header {
+      .left {
+        display: none;
+      }
+    }
+    > #content {
+      > main {
+        .sticky-main {
+          left: 20px;
+          max-width: calc(100vw - 40px);
+        }
+      }
+      > aside {
+        &:not(:empty) {
+          @include floatingMenu(right);
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 720px) {
+  #app {
+    > #content {
+      > aside,
+      > nav {
+        max-width: var(--min-col-width);
+      }
+    }
+  }
+}

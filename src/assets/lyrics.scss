@@ -1,0 +1,81 @@
+/******
+This file is part of Choir, a colaborative repository for choir lyrics.
+Copyright (C) 2023 – Florent Descroix <florentdescroix@posteo.net>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*****/
+
+chorus,
+verse {
+  display: block;
+  margin-bottom: 1em;
+}
+
+chorus {
+  border-left: 2px solid #999;
+  padding-left: 0.5em;
+}
+
+bass {
+  font-weight: bold;
+}
+
+tenor {
+  background-color: #DDD;
+}
+
+alto {
+  text-decoration: underline;
+}
+
+soprano {
+  font-style: italic;
+}
+
+bass,
+tenor,
+alto,
+soprano {
+  display: inline;
+}
+
+x2, x3 {
+  display: inline-block;
+  position: relative;
+  margin-right: 1.5ch;
+  &::after {
+    position: absolute;
+    display: flex;
+    height: calc(100% - 10px);
+    top: 5px;
+    left: 100%;
+    margin-left: .5ch;
+    padding-left: .2ch;
+    color: gray;
+    font-size: .8em;
+    border-left: 1px solid lightgrey;
+    align-items: center;
+    letter-spacing: -.1ch;
+    font-weight: normal;
+    font-style: normal;
+    text-decoration: none;
+    background: transparent;
+  }
+}
+x2::after {
+  content:"2";
+}
+x3::after {
+  content:"3";
+}

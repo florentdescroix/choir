@@ -1,0 +1,77 @@
+/******
+This file is part of Choir, a colaborative repository for choir lyrics.
+Copyright (C) 2023 – Florent Descroix <florentdescroix@posteo.net>
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>
+*****/
+
+html {
+  --header-height: 56px;
+  --footer-height: 20px;
+  --min-col-width: 280px;
+  --max-col-width: 360px;
+
+  --text-color: #2c3e50;
+  --blue: rgb(0, 132, 255);
+}
+
+@mixin floatingMenu($side) {
+    position: fixed;
+    width: 360px;
+    background: white;
+    transition: right .5s, left .5s;
+    @if $side == right {
+      right: -360px;
+    } @else {
+      left: -360px
+    }
+
+    &::after {
+      position: fixed;
+      top: 50%;
+      opacity: 1;
+      font-size: 30px;
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      transform: translateY(-50%);
+      background: lightgrey;
+      border-radius: 20px;
+      transition: right .5s, left .5s;
+      @if $side == right {
+        content: "←";
+        right: -25px;
+        text-align: left;
+      } @else {
+        content: "→";
+        left: -25px;
+        text-align: right;
+      }
+    }
+
+    &:hover {
+      box-shadow: 0 0 10px grey;
+      @if $side == right {
+        right: 0;
+        &::after {
+          right: -40px;
+        }
+      } @else {
+        left: 0;
+        &::after {
+          left: -40px;
+        }
+      }
+    }
+  }
