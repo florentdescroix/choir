@@ -119,16 +119,20 @@ export default {
   },
   methods: {
     async fillSongs() {
-      this.pages = [[]]
+      this.pages = []
       this.loading = true
+      const promises = []
       for (const song of this.songs) {
         let index = this.$root.songs.findIndex(s => s._id == song._id)
         if (!this.$root.songs[index].title) {
-          this.$root.songs[index] = await this.$store.get(song._id)
+          const len = promises.push(this.$store.get(song._id))
+          promises[len - 1].then(song => this.$root.songs[index] = song)
         }
       }
+      await Promise.all(promises)
       if (this.songs.length > 0) {
         let page = 0
+        this.pages.push([])
         this.pages[page].push(this.songs[0])
         await this.$nextTick()
         for (let i = 0; i < this.songs.length - 1; i++) {
