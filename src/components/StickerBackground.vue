@@ -54,7 +54,7 @@ export default {
     getStyle() {
       return {
         transform: `rotate(${randomInt(-100, 100)}deg)`,
-        zIndex: randomInt(-100, -100 + this.images.length)
+        zIndex: randomInt(-this.images.length, 0)
       }
     },
   }
@@ -87,7 +87,7 @@ export default {
     &:hover {
       img {
         transform: rotate(0) !important;
-        z-index: 99 !important;
+        z-index: 0 !important;
       }
     }
   }
