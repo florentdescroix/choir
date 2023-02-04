@@ -79,13 +79,6 @@ export default {
     border-radius: 3px;
   }
 
-  input,
-  textarea {
-    &:not([disabled]) {
-      //outline: 1px auto;
-    }
-  }
-
   &::after {
     content: attr(data-value) ' ';
     visibility: hidden;
