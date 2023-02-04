@@ -116,6 +116,8 @@ export default {
 </script>
   
 <style lang="scss">
-
+#song {
+  background: rgb(255, 255, 255);
+}
 </style>
   

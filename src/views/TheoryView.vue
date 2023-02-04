@@ -122,6 +122,7 @@ export default {
 </script>
 <style lang="scss">
 #theory {
+  background: rgb(255, 255, 255);
 
   .sticky-main {
     margin-top: 20px;

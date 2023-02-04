@@ -170,7 +170,7 @@ export default {
 
 <style lang="scss">
 #print {
-  background: rgb(82, 86, 89);
+  background: rgba(82, 86, 89, 0.9);
 
   #booklet {
     margin: auto;
