@@ -31,7 +31,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
           </option>
         </select>
       </span>
-      <span class="note" clickable @mousedown="play(voice.note)" @mouseup="stop()" @mouseleave="stop()"> {{ $t(`note.${ voice.note }`) }}
+      <span v-else class="note" clickable @mousedown="play(voice.note)" @mouseup="stop()" @mouseleave="stop()"> {{ $t(`note.${ voice.note }`) }}
       </span>
       <BumbleBee v-if="!disabled && voice.note || disabled && voice.drone" class="drone" :disabled="disabled"
         v-model="voice.drone" />
