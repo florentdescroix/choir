@@ -16,10 +16,15 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 *****/
 
+html,
+body {
+  overflow: hidden;
+}
+
 #app {
   width: 100vw;
   height: 100vh;
-  overflow: auto;
+  overflow: hidden;
 
   > header,
   > #content {
@@ -33,9 +38,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
     left: 0;
     width: 100vw;
     height: var(--header-height);
-    padding: 0 5px;
+    padding: 0 20px;
     overflow: hidden;
-    background: white;
     z-index: 100;
 
     > div {
@@ -59,11 +63,15 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
   > footer {
     position: fixed;
-    height: var(--footer-height);
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
   }
 
   > #content {
     min-height: calc(100vh - var(--header-height));
+    max-height: calc(100vh - var(--header-height));
     margin-top: var(--header-height);
 
     > main,
@@ -80,7 +88,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       top: var(--header-height);
       flex-direction: column;
       max-height: 0;
-      background: white;
       flex: 0.5;
       min-width: var(--min-col-width);
       max-width: var(--max-col-width);
@@ -99,9 +106,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
     > main {
       flex: 1;
+      overflow: auto;
+      z-index: 50;
+
       .sticky-main {
         position: sticky;
-        left: calc(var(--min-col-width) + 20px);
+        left: 0;
         max-width: calc(100vw - 2 * var(--min-col-width) - 40px);
       }
     }

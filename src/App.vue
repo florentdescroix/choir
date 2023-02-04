@@ -60,7 +60,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         </label>
         <div v-for="song in filteredSongs" :key="song._id" :class="{ title: true, child: !!song.parent }">
           <input v-if="$route.name == 'print'" type="checkbox" :value="song._id" v-model="selectedSongs" />
-          <router-link :to="{ name: 'song', params: { id: song._id } }" :class="{active: song._id == $route.params.id}">
+          <router-link :to="{ name: 'song', params: { id: song._id } }"
+            :class="{ active: song._id == $route.params.id }">
             {{ song._id }}
           </router-link>
         </div>
@@ -72,6 +73,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         <router-link :to="{ name: 'print' }">
           <button>{{ $t('generate_booklet') }}</button>
         </router-link>
+        <router-link :to="{ name: 'theory' }">
+          <button>{{ $t('theory') }}</button>
+        </router-link>
+        <button @click="logged ? logout() : login()">{{ logged? $t('logout'): $t('login')}}</button>
       </footer>
     </nav>
 
@@ -82,16 +87,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
     <aside>
       <div id="aside">
       </div>
-      <footer>
-        <router-link :to="{ name: 'theory' }">
-          <button>{{ $t('theory') }}</button>
-        </router-link>
-        <button @click="logged ? logout() : login()">{{ logged? $t('logout'): $t('login')}}</button>
-      </footer>
     </aside>
   </div>
 
   <footer>
+    Copyleft (Ɔ) 2023 – <a href="mailto:florentdescroix@posteo.net">Florent Descroix</a> – <a
+      href="https://github.com/florentdescroix/choir">GitHub</a>
   </footer>
 
   <datalist id="tagList">
@@ -289,7 +290,6 @@ label {
   }
 
   header {
-
     background-color: var(--text-color);
 
     h1 {
@@ -308,7 +308,6 @@ label {
 
     #mainTitle {
       font-family: cursive;
-      padding-left: 15px;
     }
 
     #pageTitle {
@@ -317,9 +316,21 @@ label {
     }
 
     #buttons {
-      >button {
-        margin-left: 20px;
+      button {
+        margin-left: 10px;
       }
+    }
+  }
+
+  >footer {
+    text-align: right;
+    padding-right: 5px;
+    font-size: 0.7em;
+    z-index: 100;
+    color: rgba(0, 0, 0, .4);
+
+    a {
+      color: inherit;
     }
   }
 
@@ -327,6 +338,7 @@ label {
 
     >nav,
     >aside {
+      background: rgba(255, 255, 255, 0.9);
 
       h2 {
         margin: 0;
