@@ -36,7 +36,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 </template>
 
 <script>
-/* global Tone */
+import * as Tone from 'tone'
 import { Voices } from "@/helpers/Constants.js"
 
 export default {
