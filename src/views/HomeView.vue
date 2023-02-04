@@ -23,25 +23,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 </template>
 
 <script>
+
 export default {
   name: "HomeView",
-  data() {
-    return {
-      song: false
-    };
-  },
-  async mounted() {
+  async created() {
     document.title = this.$t("main_title");
-    let id = this.$root.songs[Math.floor(Math.random() * this.$root.songs.length)]._id;
-    this.song = await this.$store.get(id)
   },
+  methods: {
+  }
 };
 </script>
 
 <style lang="scss">
-#randomSong {
-  margin: auto;
-  max-width: 100%;
-  width: 148mm;
-}
 </style>
