@@ -19,17 +19,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 <template>
   <div id="keyboard" :class="{ loading: loading }">
     <template v-for="key, i of keys" :key="i">
-      <div :id="key.note + key.octave"
+      <div :id="key"
         :class="{ key: true, hover: hoverIndex >= 0 && highlight.includes(i - hoverIndex), played: playedKeys.includes(key) }"
         @mousedown="$emit('click', i)" @mouseleave="hoverIndex = -1"
         @mouseenter="hoverIndex = i; $event.buttons === 1 ? $emit('click', i) : null">
         <template v-for="voice, name, i in voices" :key="name">
-          <div v-if="key.note == voice.from.note && key.octave == voice.from.octave"
-            :style="{ width: 40 * voice.length + 'px', marginTop: i * 1.2 + 'em' }" :class="[name, 'voice']">
+          <div v-if="key == voice.from" :style="{ width: 40 * voice.length + 'px', marginTop: i * 1.2 + 'em' }"
+            :class="[name, 'voice']">
             {{ $t(name) }}
           </div>
         </template>
-        <div class="label">{{ key.note.includes('#') ? '' : $t(`note.${key.note}`) }}</div>
+        <div class="label">{{ key.includes('#') ? '' : $t(`note.${key.slice(0, -1)}`) }}</div>
       </div>
     </template>
   </div>
@@ -48,13 +48,13 @@ export default {
       voices: Voices,
       hoverIndex: -1,
       playedKeys: [],
-      loading: false
+      loading: false,
     }
   },
   async created() {
     const urls = {}
     for (const key of this.keys) {
-      urls[key.note + key.octave] = key.note.replace('#', 's') + key.octave + ".mp3"
+      urls[key] = key.replace('#', 's') + ".mp3"
     }
 
     this.sampler = new Tone.Sampler({
@@ -77,14 +77,11 @@ export default {
     }
   },
   methods: {
-    keyToName(key) {
-      return key.note + key.octave
-    },
     playKeys(keys) {
       if (!Array.isArray(keys)) {
         keys = [keys]
       }
-      this.sampler.triggerAttackRelease(keys.map(this.keyToName), this.speed * 2)
+      this.sampler.triggerAttackRelease(keys, this.speed * 2)
       this.playedKeys = keys
       return new Promise(resolve => setTimeout(() => {
         this.playedKeys = []

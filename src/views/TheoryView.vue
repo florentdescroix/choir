@@ -53,7 +53,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
     </div>
     <div v-for="interval of 21" :key="interval">
       <label>
-        <input type="checkbox" :value="interval" v-model="selectedIntervals" @mouseup="disableMode"/>
+        <input type="checkbox" :value="interval" v-model="selectedIntervals" @mouseup="disableMode" />
         {{ $t('interval.'+ interval) }}
       </label>
       <hr v-if="interval == 11" />
@@ -85,14 +85,15 @@ export default {
   computed: {
     keys() {
       let keys = []
-      for (let octave = Voices.bass.from.octave; octave <= Voices.soprano.to.octave; octave++) {
-        for (const index in Notes) {
-          const note = Notes[index]
-          if (octave == Voices.bass.from.octave && index >= Notes.indexOf(Voices.bass.from.note)
-            || octave > Voices.bass.from.octave && octave < Voices.soprano.to.octave
-            || octave == Voices.soprano.to.octave && index <= Notes.indexOf(Voices.soprano.to.note)) {
-            keys.push({ note, octave })
-          }
+      let index = Notes.indexOf(Voices.bass.from.slice(0, -1))
+      let octave = Voices.bass.from.slice(-1) * 1
+      console.log(Notes[index] + octave)
+      while (keys[keys.length - 1] != Voices.soprano.to) {
+        keys.push(Notes[index] + octave)
+        index++
+        if (index == Notes.length) {
+          index = 0
+          octave++
         }
       }
       return keys

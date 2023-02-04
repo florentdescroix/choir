@@ -19,14 +19,22 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 export const Notes = [
   'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
 ]
+class Voice {
+  constructor(from, to) {
+    this.from = from
+    this.to = to
+    this.length = 'CDEFGAB'.length * (to.slice(-1) - from.slice(-1)) - 'CDEFGAB'.indexOf(from.slice(0, -1)) + 'CDEFGAB'.indexOf(to.slice(0, -1))
+  }
+}
 
 export const Voices = {
-  bass: { from: { note: 'C', octave: 2 }, to: { note: 'E', octave: 4 }, length: 16 },
-  baritone: { from: { note: 'F', octave: 2 }, to: { note: 'G', octave: 4 }, length: 15 },
-  tenor: { from: { note: 'B', octave: 2 }, to: { note: 'C', octave: 5 }, length: 15 },
-  alto: { from: { note: 'E', octave: 3 }, to: { note: 'E', octave: 5 }, length: 14 },
-  mezzo: { from: { note: 'G', octave: 3 }, to: { note: 'G', octave: 5 }, length: 14 },
-  soprano: { from: { note: 'C', octave: 4 }, to: { note: 'C', octave: 6 }, length: 14 }
+  bass: new Voice('C2', 'E4'),
+  baritone: new Voice('F2', 'G4'),
+  tenor: new Voice('B2', 'C5'),
+  alto: new Voice('E3', 'E5'),
+  mezzo: new Voice('G3', 'G5'),
+  soprano: new Voice('C4', 'C6')
+
 }
 
 export const Chords = {
@@ -58,15 +66,15 @@ export const Chords = {
 }
 
 export const Modes = {
-  none:             [0],
-  major:            [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
-  minor_natural:    [0, 2, 3, 5, 7, 8, 10, 12, 10, 8, 7, 5, 3, 2, 0],
-  minor_melodique:  [0, 2, 3, 5, 7, 9, 11, 12, 10, 8, 7, 5, 3, 2, 0],
+  none: [0],
+  major: [0, 2, 4, 5, 7, 9, 11, 12, 11, 9, 7, 5, 4, 2, 0],
+  minor_natural: [0, 2, 3, 5, 7, 8, 10, 12, 10, 8, 7, 5, 3, 2, 0],
+  minor_melodique: [0, 2, 3, 5, 7, 9, 11, 12, 10, 8, 7, 5, 3, 2, 0],
   minor_harmonique: [0, 2, 3, 5, 7, 8, 11, 12, 11, 8, 7, 5, 3, 2, 0],
   major_pentatonic: [0, 2, 4, 7, 9, 12, 9, 7, 4, 2, 0],
   minor_pentatonic: [0, 3, 5, 7, 9, 12, 9, 7, 5, 3, 0],
-  major_blues:      [0, 2, 3, 4, 7, 9, 12, 9, 7, 4, 3, 2, 0],
-  minor_blues:      [0, 3, 5, 6, 7, 10, 12, 10, 7, 6, 5, 3, 0],
+  major_blues: [0, 2, 3, 4, 7, 9, 12, 9, 7, 4, 3, 2, 0],
+  minor_blues: [0, 3, 5, 6, 7, 10, 12, 10, 7, 6, 5, 3, 0],
   // double2Aug1:      [0, 1, 4, 5, 7, 8, 11, 12, 11, 8, 7, 5, 4, 1, 0],
   // double2Aug2:      [0, 2, 3, 6, 7, 8, 11, 12, 11, 8, 7, 6, 3, 2, 0],
   // chromatic:        [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0],
