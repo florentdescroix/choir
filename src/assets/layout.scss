@@ -109,6 +109,10 @@ body {
       overflow: auto;
       z-index: 50;
 
+      &:empty {
+        z-index: -1;
+      }
+
       .sticky-main {
         position: sticky;
         left: 0;
