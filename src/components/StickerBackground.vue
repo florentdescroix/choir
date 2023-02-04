@@ -18,7 +18,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 <template>
   <div id="stickers" v-show="loaded == images.length">
-    <a v-for="url, i of images" :key="i" :href="url" target="_blank" v-once >
+    <a v-for="url, i of images" :key="i" :href="url" target="_blank" v-once>
       <img :src="url" :style="getStyle(i)" ref="stickers" @load="loaded++" />
     </a>
   </div>
@@ -46,7 +46,7 @@ export default {
   computed: {
     amount() {
       const screenArea = window.innerWidth * window.innerHeight
-      const stickerArea = 180**2
+      const stickerArea = 180 ** 2
       return screenArea / stickerArea + 5
     }
   },
@@ -54,7 +54,7 @@ export default {
     getStyle() {
       return {
         transform: `rotate(${randomInt(-100, 100)}deg)`,
-        zIndex: randomInt(0, this.images.length)
+        zIndex: randomInt(-100, -100 + this.images.length)
       }
     },
   }
