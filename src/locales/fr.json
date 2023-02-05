@@ -28,14 +28,6 @@
     "G#": "Sol#"
   },
   "main_title": "Chants militants révolutionnaires",
-  "button": {
-    "chorus": "Refrain",
-    "spoken": "Parlé",
-    "x2": "×2",
-    "x3": "×3",
-    "x4": "×4",
-    "x5": "×5"
-  },
   "repeat": "Répétition",
   "search": "Rechercher",
   "about": "À propos",
@@ -63,7 +55,6 @@
   "child_of": "Inspiré de",
   "verse": "Couplet",
   "chorus": "Refrain",
-  "spoken": "Parlé",
   "cancel": "Annuler",
   "remove": "Supprimer",
   "save": "Enregistrer",
