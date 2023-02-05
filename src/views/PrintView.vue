@@ -142,13 +142,16 @@ export default {
           const div1 = this.$refs.songs[i].$el
           const div2 = this.$refs.songs[i + 1].$el
           const width1 = div1.style.width
-          for (const width of [this.paper[0] / 2 + 'mm', this.paper[0] + 'mm', '']) {
+          for (const width of ['50%', '100%', '']) {
             div1.style.width = width1 == '' ? width : width1
             div2.style.width = width
             await this.$nextTick()
             if (this.validSizes(div1) && this.validSizes(div2) && this.validSizes(pageDiv)) {
               break
             }
+          }
+          if (div1.style.width == '') {
+            div1.style.width = div1.offsetWidth > div1.parentElement.offsetWidth / 2 ? "100%" : "50%"
           }
           if (!this.validSizes(pageDiv)) {
             this.pages[page].pop()
