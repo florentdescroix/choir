@@ -127,6 +127,7 @@ export default {
       white-space: pre-line;
       font-weight: bold;
       text-align: justify;
+      text-align-last: center;
       font-size: 2.5mm;
     }
 
