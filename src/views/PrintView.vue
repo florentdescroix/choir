@@ -222,10 +222,24 @@ export default {
 }
 
 @media print {
+
+  html,
+  body,
   #app {
     overflow: visible;
+  }
+
+  #app {
+
+    #stickers {
+      display: none;
+    }
 
     >header {
+      display: none;
+    }
+
+    >footer {
       display: none;
     }
 
