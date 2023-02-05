@@ -24,9 +24,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
     <input ref="input" :id="`trix-${id}-input`" :value="modelValue" type="hidden" />
     <trix-editor ref="trix" :class="{ hasFocus, hasSelection, disabled }" @trix-change="change"
-      @trix-before-paste="paste" @click="click" @mousemove="mousemove" @focus="hasFocus = true"
-      @blur="hasFocus = false; hasSelection = false" @keydown="keydown" :input="`trix-${id}-input`"
-      :toolbar="`trix-${id}-toolbar`" :placeholder="$attrs.placeholder" :contenteditable="!disabled">
+      @trix-before-paste="paste" @click="click" @mousemove="mousemove" @mouseleave="hover = false"
+      @focus="hasFocus = true" @blur="hasFocus = false; hasSelection = false" @keydown="keydown"
+      :input="`trix-${id}-input`" :toolbar="`trix-${id}-toolbar`" :placeholder="$attrs.placeholder"
+      :contenteditable="!disabled">
     </trix-editor>
 
     <div :id="`trix-${id}-toolbar`">
@@ -46,7 +47,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 <script>
 import Trix from "trix"
 import { Voices } from "@/helpers/Constants";
-const Repetitions = ['x2', 'x3']
+const Repetitions = ['x2', 'x3', 'x4', 'x5']
 
 let uuid = 0
 
@@ -182,7 +183,6 @@ export default {
             } else {
               this.$refs.toggler.classList.add("merge")
             }
-
           }
         }
       }

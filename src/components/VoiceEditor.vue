@@ -19,9 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 <template>
   <div class="voice">
     <h3 class="title">
-      <span @click="$emits('click', voiceName)">
+      <component :is="voiceName" @click="$emits('click', voiceName)">
         {{ $t(voiceName) + ' ' }}
-      </span>
+      </component>
       <span v-if="!disabled" class="note">
         <select v-model="voice.note">
           <option value="">{{ $t('none') }}</option>
@@ -31,7 +31,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
           </option>
         </select>
       </span>
-      <span v-else class="note" clickable @mousedown="play(voice.note)" @mouseup="stop()" @mouseleave="stop()"> {{ $t(`note.${ voice.note }`) }}
+      <span v-else class="note" :clickable="voice.note == '?' ? null : ''" @mousedown="play(voice.note)" @mouseup="stop()"
+        @mouseleave="stop()"> {{ $t(`note.${ voice.note }`) }}
       </span>
       <BumbleBee v-if="!disabled && voice.note || disabled && voice.drone" class="drone" :disabled="disabled"
         v-model="voice.drone" />
@@ -73,8 +74,10 @@ export default {
   },
   methods: {
     play(note) {
-      const octave = this.voiceName == 'bass' ||  this.voiceName == 'tenor' ? 3 : 4
-      this.synth.triggerAttack(note + octave, Tone.now())
+      if (note != '?') {
+        const octave = this.voiceName == 'bass' || this.voiceName == 'tenor' ? 3 : 4
+        this.synth.triggerAttack(note + octave, Tone.now())
+      }
     },
     stop() {
       this.synth.triggerRelease(Tone.now())

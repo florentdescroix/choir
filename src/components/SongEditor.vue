@@ -37,19 +37,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         <h3>
           {{ $t('phonetic') }}
         </h3>
-        <LyricsEditor v-model="song.phonetic" :disabled="disabled" :placeholder="$t('phonetic')" noPopup/>
+        <LyricsEditor v-model="song.phonetic" :disabled="disabled" :placeholder="$t('phonetic')" noPopup />
       </div>
       <div v-if="!disabled || song.translation" id="song-translation">
         <h3>
           {{ $t('translation') }}
         </h3>
-        <LyricsEditor v-model="song.translation" :disabled="disabled" :placeholder="$t('translation')" noPopup/>
+        <LyricsEditor v-model="song.translation" :disabled="disabled" :placeholder="$t('translation')" noPopup />
       </div>
     </div>
   </div>
 
   <Teleport to="#aside">
-    <label v-if="!disabled || song.parent" id="song-parent">
+    <label v-if="!disabled || song.parent" id="songParent">
       <h3 class="title">{{ $t('child_of') }} : </h3>
       <select v-if="!disabled" v-model="song.parent">
         <option value="">{{ $t('none') }}</option>
@@ -118,9 +118,15 @@ export default {
 }
 
 aside {
-  #song-parent .title {
-    display: inline-block;
-    padding-right: 1ch;
+  #songParent {
+    select {
+      text-transform: capitalize;
+    }
+
+    .title {
+      display: inline-block;
+      padding-right: 1ch;
+    }
   }
 }
 
