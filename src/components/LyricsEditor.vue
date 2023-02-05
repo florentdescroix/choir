@@ -17,14 +17,14 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 -->
 
 <template>
-  <div class="editor-container">
+  <div class="editor-container" @mouseleave="hover = false">
 
     <div v-if="!disabled" v-show="hover" class="toggler" ref="toggler" :style="togglerStyle" @click="splitOrMerge">
     </div>
 
     <input ref="input" :id="`trix-${id}-input`" :value="modelValue" type="hidden" />
     <trix-editor ref="trix" :class="{ hasFocus, hasSelection, disabled }" @trix-change="change"
-      @trix-before-paste="paste" @click="click" @mousemove="mousemove" @mouseleave="hover = false"
+      @trix-before-paste="paste" @click="click" @mousemove="mousemove"
       @focus="hasFocus = true" @blur="hasFocus = false; hasSelection = false" @keydown="keydown"
       :input="`trix-${id}-input`" :toolbar="`trix-${id}-toolbar`" :placeholder="$attrs.placeholder"
       :contenteditable="!disabled">
