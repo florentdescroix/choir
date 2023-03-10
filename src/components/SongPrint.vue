@@ -23,19 +23,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         <tr>
           <template v-for="(voice, name) in song.voices" :key="name">
             <th v-if="voice.note">
-              <component :is="name">
+              <voice :class="name">
                 <BumbleBee v-if="voice.drone" disabled />
                 <template v-else>
                   {{ $t(`short.${name}`) }}
                 </template>
-              </component>
+              </voice>
             </th>
           </template>
         </tr>
         <tr>
           <template v-for="(voice, name) in song.voices" :key="name">
             <td v-if="voice.note">
-              {{ $t(`note.${ voice.note }`) }}
+              {{ $t(`note.${voice.note}`) }}
             </td>
           </template>
         </tr>
@@ -95,81 +95,83 @@ export default {
 </script>
 
 <style lang="scss">
-.song-print {
-  color: black;
-  font-family: EBGaramond, serif;
-  position: relative;
-  font-size: 3mm;
-  width: fit-content;
-  height: min-content;
+#app {
+  .song-print {
+    color: black;
+    font-family: EBGaramond, serif;
+    position: relative;
+    font-size: 3mm;
+    width: fit-content;
+    height: min-content;
 
-  .header {
-    min-height: 1em;
-    margin-bottom: 3mm;
+    .header {
+      min-height: 1em;
+      margin-bottom: 3mm;
 
-    .title,
-    .description {
+      .title,
+      .description {
+        width: 100%;
+        font-family: Raleway, sans-serif;
+      }
+
+
+      .title {
+        margin: auto;
+        margin-bottom: 1mm;
+        text-align: center;
+        font-size: 5mm;
+        font-weight: bold;
+      }
+
+      .description {
+        font-style: italic;
+        white-space: pre-line;
+        font-weight: bold;
+        text-align: justify;
+        text-align-last: center;
+        font-size: 2.5mm;
+      }
+
+      .voices {
+        float: right;
+        margin-left: 1mm;
+        border-collapse: collapse;
+        font-family: Helvetica, Arial, sans-serif;
+        text-align: center;
+
+        th {
+          font-weight: normal;
+          padding: 0;
+          position: relative;
+        }
+
+        td {
+          border: 1px solid black;
+          width: 7mm;
+          height: 7mm;
+          padding: 0;
+        }
+      }
+    }
+
+    .body {
       width: 100%;
-      font-family: Raleway, sans-serif;
-    }
+      display: flex;
+      column-gap: 5mm;
 
+      .lyrics,
+      .phonetic,
+      .translation {
+        display: inline-block;
+        vertical-align: top;
+        min-width: 150px;
+        letter-spacing: -0.19px;
+        column-gap: 1.5mm;
 
-    .title {
-      margin: auto;
-      margin-bottom: 1mm;
-      text-align: center;
-      font-size: 5mm;
-      font-weight: bold;
-    }
-
-    .description {
-      font-style: italic;
-      white-space: pre-line;
-      font-weight: bold;
-      text-align: justify;
-      text-align-last: center;
-      font-size: 2.5mm;
-    }
-
-    .voices {
-      float: right;
-      margin-left: 1mm;
-      border-collapse: collapse;
-      font-family: Helvetica, Arial, sans-serif;
-      text-align: center;
-
-      th {
-        font-weight: normal;
-        padding: 0;
-        position: relative;
-      }
-
-      td {
-        border: 1px solid black;
-        width: 7mm;
-        height: 7mm;
-        padding: 0;
-      }
-    }
-  }
-
-  .body {
-    width: 100%;
-    display: flex;
-    column-gap: 5mm;
-
-    .lyrics,
-    .phonetic,
-    .translation {
-      display: inline-block;
-      vertical-align: top;
-      min-width: 150px;
-      letter-spacing: -0.19px;
-      column-gap: 1.5mm;
-
-      chorus,
-      verse {
-        margin-bottom: 0.5em;
+        chorus,
+        verse {
+          margin-bottom: 0.5em;
+        }
       }
     }
   }

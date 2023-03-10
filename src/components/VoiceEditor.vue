@@ -19,9 +19,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 <template>
   <div class="voice">
     <h3 class="title">
-      <component :is="voiceName" @click="$emits('click', voiceName)">
+      <voice :class="voiceName" @click="$emits('click', voiceName)">
         {{ $t(voiceName) + ' ' }}
-      </component>
+      </voice>
       <span v-if="!disabled" class="note">
         <select v-model="voice.note">
           <option value="">{{ $t('none') }}</option>
