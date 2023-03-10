@@ -17,90 +17,32 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 -->
 
 <template>
-  <div class="editor-container" @mouseleave="hover = false">
-
-    <div v-if="!disabled" v-show="hover" class="toggler" ref="toggler" :style="togglerStyle" @click="splitOrMerge">
-    </div>
-
-    <input ref="input" :id="`trix-${id}-input`" :value="modelValue" type="hidden" />
-    <trix-editor ref="trix" :class="{ hasFocus, hasSelection, disabled }" @trix-change="change"
-      @trix-before-paste="paste" @click="click" @mousemove="mousemove"
-      @focus="hasFocus = true" @blur="hasFocus = false; hasSelection = false" @keydown="keydown"
-      :input="`trix-${id}-input`" :toolbar="`trix-${id}-toolbar`" :placeholder="$attrs.placeholder"
-      :contenteditable="!disabled">
-    </trix-editor>
-
-    <div :id="`trix-${id}-toolbar`">
-      <div v-if="!noPopup" class="floating-toolbar" :style="floatingToolbarStyle">
-        <button v-for="name in buttons" :data-trix-attribute="name" :key="name">
-          <component :is="name">
-            {{ $t(`short.${name}`) }}
-          </component>
-        </button>
-        <button @mousedown="clearStyle">✕</button>
-      </div>
-    </div>
-
+  <div class="toolbar-wrapper">
+    <div :id="`toolbar-${uuid}`"></div>
+  </div>
+  <div class="editor-container">
+    <Editor is="editor" class="editor" v-bind="$attrs" initial-value="modelValue"
+      api-key="obxtg43v00kcomg2zvm4hsgcmpzk37sg7bwcimz3im92ueqp" :init="init" v-model="value" @click="click">
+    </Editor>
   </div>
 </template>
 
 <script>
-import Trix from "trix"
-import { Voices } from "@/helpers/Constants";
-const Repetitions = ['x2', 'x3', 'x4', 'x5']
+import Editor from '@tinymce/tinymce-vue'
+import { Voices } from '@/helpers/Constants'
+
+const LyricsElements = {
+  section: ["verse", "chorus"],
+  voice: Object.keys(Voices),
+  repeat: ["x2", "x3", "x4", "x5"],
+}
 
 let uuid = 0
 
-function getElementDefaultDisplay(tag) {
-  var cStyle,
-    t = document.createElement(tag),
-    gcs = "getComputedStyle" in window;
-
-  document.body.appendChild(t);
-  cStyle = (gcs ? window.getComputedStyle(t, "") : t.currentStyle).display;
-  document.body.removeChild(t);
-
-  return cStyle;
-}
-
-for (const voice in Voices) {
-  Trix.config.textAttributes[voice] = {
-    tagName: voice,
-    inheritable: true,
-    className: "voice",
-    parser: function (element) {
-      return element.tagName === voice
-    }
-  }
-}
-
-for (const repeat of Repetitions) {
-  Trix.config.textAttributes[repeat] = {
-    tagName: repeat,
-    group: true,
-    parser: function (element) {
-      return element.tagName === repeat
-    }
-  }
-}
-
-Trix.config.blockAttributes.default.tagName = "verse"
-Trix.config.blockAttributes.default.exclusive = true
-Trix.config.blockAttributes.default.nestable = false
-
-Trix.config.blockAttributes.chorus = {
-  tagName: "chorus",
-  exclusive: true,
-  nestable: false,
-  group: false,
-  // terminal: true,
-  parser: function (element) {
-    return element.tagName === "chorus"
-  }
-}
-
 export default {
   name: 'LyricsEditor',
+  components: { Editor },
+  inheritAttrs: false,
   emits: ["update:modelValue"],
   props: {
     modelValue: {
@@ -117,260 +59,272 @@ export default {
     }
   },
   data() {
+    uuid++
     return {
-      id: uuid++,
-      floatingToolbarStyle: {},
-      togglerStyle: {},
-      hover: false,
-      hasFocus: false,
-      hasSelection: false,
+      value: this.modelValue,
+      uuid: uuid,
+      buttons: {},
+      init: {
+        inline: true,
+        menubar: false,
+        statusbar: false,
+        paste_block_drop: false,
+        newline_behavior: 'invert',
+        forced_root_block: "section",
+        forced_root_block_attrs: { class: "verse" },
+        invalid_elements: "*",
+        valid_children: `-section[section],-repeat[section]`,
+        valid_classes: {
+          section: LyricsElements.section.join(" "),
+          voice: LyricsElements.voice.join(" "),
+          repeat: LyricsElements.repeat.join(" ").replaceAll('x', '')
+        },
+        valid_elements: "br,section[!class],repeat[!class],voice[!class]",
+        custom_elements: "section,repeat,~voice",
+        fixed_toolbar_container: `#toolbar-${uuid}`,
+        toolbar: "bass tenor alto soprano | x1 x2 x3 x4 x5 | removeformat | update",
+        formats: {
+          removeformat: { selector: 'repeat,voice', remove: 'all', deep: true },
+          section: { block: "section", attributes: { class: '%value' } },
+          repeat: { block: "repeat", attributes: { class: '%value' }, merge_siblings: false },
+          voice: { inline: "voice", classes: '%value', block_expand: true, split: false }
+        },
+        setup: (editor) => {
+          this.editor = editor
+
+          editor.ui.registry.addButton("update", {
+            text: "update",
+            onAction:() => {
+              this.updateToNewForm()
+            }
+          })
+
+          for (const name of LyricsElements.voice) {
+            editor.ui.registry.addToggleButton(name, {
+              text: this.$t(`short.${name}`),
+              onAction: () => {
+                editor.formatter.toggle("voice", { value: name })
+              },
+              onSetup: (api) => {
+                this.buttons[name] = api
+                api.setEnabled(this.voices[name]?.note)
+                api.setActive(editor.formatter.match("voice", { value: name }))
+                editor.formatter.formatChanged("voice", (state) => {
+                  api.setActive(state)
+                }, false, { value: name })
+                editor.formatter.formatChanged("voice", (state) => {
+                  api.setActive(state)
+                }, false, { value: name })
+              }
+            })
+          }
+
+          for (const name of LyricsElements.repeat) {
+            const value = name.slice(-1)
+            editor.ui.registry.addToggleButton(name, {
+              text: this.$t(`short.${name}`),
+              onAction: () => {
+                if (editor.selection.isCollapsed() && editor.formatter.match('repeat', { value })) {
+                  editor.formatter.remove('repeat', { value }, editor.selection.getNode())
+                } else if (!editor.selection.isCollapsed()) {
+                  const selectedContent = editor.selection.getContent()
+                  if (!selectedContent.includes("section")) {
+                    const element = document.createElement('repeat')
+                    element.className = value
+                    element.innerHTML = selectedContent
+                    editor.selection.setContent(element.outerHTML)
+                  }
+                }
+              },
+              onSetup: (api) => {
+                api.setActive(editor.formatter.match('repeat', { value }))
+                editor.on('SelectionChange', () => {
+                  api.setActive(editor.selection.isCollapsed() && editor.formatter.match('repeat', { value }))
+                })
+              }
+            })
+          }
+        }
+      }
     }
   },
   computed: {
-    buttons() {
-      return [...Object.keys(Voices).filter(v => this.$parent.song.voices[v]?.note), ...Repetitions]
+    voices() {
+      return this.$parent.song.voices
     }
   },
-  async mounted() {
-    document.addEventListener("selectionchange", this.select)
-    await this.$nextTick()
-    this.editor = this.$refs.trix.editor
-  },
-  unmounted() {
-    document.removeEventListener("selectionchange", this.select)
+  watch: {
+    value() {
+      this.$emit('update:modelValue', this.value)
+    },
+    voices: {
+      deep: true,
+      handler() {
+        for (const name in this.voices) {
+          this.buttons?.[name]?.setEnabled(this.voices[name]?.note)
+        }
+      }
+    }
   },
   methods: {
-    keydown(e) {
-      if ((e.ctrlKey || e.metaKey)) {
-        if (e.key === 'Z')
-          this.editor.undoManager.redo()
-        else if (e.key === 'z')
-          this.editor.undoManager.undo()
+    click(e, editor) {
+      if (editor && e.target?.tagName == 'SECTION') {
+        editor.formatter.toggle("section", { value: 'chorus' })
+      } else if (editor && e.target?.tagName == 'REPEAT') {
+        editor.formatter.remove("repeat", { value: e.target.className }, e.target)
       }
     },
-    click(e) {
-      if (!this.disabled && this.hasFocus) {
-        let tagName = e.target?.tagName
-        if (tagName === 'VERSE' || tagName === 'CHORUS') {
-          let other = document.createElement(tagName === 'VERSE' ? 'chorus' : 'verse')
-          other.innerHTML = e.target.innerHTML
-          this.$refs.trix.replaceChild(other, e.target)
+    updateToNewForm() {
+      let lyrics = this.modelValue
+
+      for (const type in LyricsElements) {
+        for (const el of LyricsElements[type]) {
+          lyrics = lyrics.replaceAll(`<${el}>`, `<${type} class="${el}">`)
+          lyrics = lyrics.replaceAll(`</${el}>`, `</${type}>`)
         }
       }
-    },
-    change() {
-      this.$emit('update:modelValue', this.$refs.input.value)
-    },
-    paste(event) {
-      if (!this.disabled && event.paste.html) {
-        let div = document.createElement("div")
-        div.innerHTML = event.paste.html
-        event.paste.html = "<verse>" + this.html2text(div) + "</verse>"
-      }
-    },
-    mousemove(e) {
-      if (!this.disabled && this.hasFocus) {
-        this.hover = false
-        const origin = this.$refs.trix.getBoundingClientRect()
-        for (const elem of this.$refs.trix.querySelectorAll('br, verse, chorus')) {
-          const rect = elem.getBoundingClientRect()
-          if (e.clientX > origin.left && e.clientX < origin.right
-            && e.clientY > rect.bottom - 5 && e.clientY < rect.bottom + 5) {
-            this.hover = elem
-            this.togglerStyle.top = rect.bottom - origin.top + "px"
-            if (elem.tagName == 'BR') {
-              this.$refs.toggler.classList.remove("merge")
-            } else {
-              this.$refs.toggler.classList.add("merge")
-            }
-          }
-        }
-      }
-    },
-    select() {
-      if (!this.disabled && this.hasFocus) {
-        this.hasSelection = !getSelection().isCollapsed
-        if (this.hasSelection) {
-          let range = this.editor.getSelectedRange()
-          let start = this.editor.getClientRectAtPosition(Math.min(...range))
-          let origin = this.editor.getClientRectAtPosition(0)
-          this.floatingToolbarStyle.top = start.top - origin.top + "px"
-          this.floatingToolbarStyle.left = start.left - origin.left + "px"
-        }
-      }
-    },
-    splitOrMerge() {
-      if (this.hover.tagName === "BR") { // Split
-        this.editor.recordUndoEntry("Split block")
-        let newPart = document.createElement("verse")
-        let next = this.hover.nextSibling
-        while (next) {
-          let realNext = next.nextSibling
-          newPart.appendChild(next)
-          next = realNext
-        }
-        this.hover.parentNode.after(newPart)
-      } else { // Merge
-        this.editor.recordUndoEntry("Merge block")
-        this.hover.appendChild(document.createElement("br"))
-        let next = this.hover.nextSibling.firstChild
-        while (next) {
-          let realNext = next.nextSibling
-          this.hover.appendChild(next)
-          next = realNext
-        }
-        this.hover.parentNode.removeChild(this.hover.nextSibling)
-      }
-      this.hover = false
-    },
-    clearStyle() {
-      this.editor.recordUndoEntry("Clear styles")
-      for (const name of this.buttons) {
-        this.editor.deactivateAttribute(name);
-      }
-    },
-    html2text(el) {
-      if (el.nodeName === "#text") {
-        return el.textContent || el.innerText || ""
-      } else if (el.tagName === "BR") {
-        return "<br>"
-      } else if (["VERSE", "CHORUS", "SOPRANO", "ALTO", "TENOR", "BASS"].includes(el.nodeName)) {
-        return el.outerHTML
-      } else {
-        let text = "";
-        if (el.childElementCount != el.childNodes.length
-          && getElementDefaultDisplay(el.tagName) === "block") {
-          text += "</verse><verse>"
-        }
-        el.childNodes.forEach(
-          child => {
-            text += this.html2text(child)
-          }
-        )
-        return text
-      }
+
+      console.log(lyrics)
+      this.value = lyrics
     }
   }
 }
 </script>
 
 <style lang="scss">
-.editor-container {
-  position: relative;
+.toolbar-wrapper {
+  position: sticky;
+  top: 22px;
+  height: 0;
+  z-index: 10;
 
-  trix-editor {
-    border: none;
-    outline: none;
+  [id|=toolbar] {
+    position: absolute;
+    top: -45px;
     width: max-content;
-    min-width: 184px;
-    padding: 4px;
 
-    &:empty::before {
-      content: attr(placeholder);
-      color: graytext;
+    button[aria-disabled="true"] {
+      display: none;
+    }
+  }
+}
+
+
+.editor {
+  outline: none;
+  width: max-content;
+  min-width: 184px;
+  padding: 4px;
+
+  &:focus-visible {
+    >* {
+      outline-style: auto;
+      outline-color: rgb(0, 95, 204);
+      outline-offset: 5px;
     }
 
-    &:focus-visible {
-      >* {
-        outline-style: auto;
-        outline-color: rgb(0, 95, 204);
-        outline-offset: 2.5px;
-      }
-    }
+    section {
+      position: relative;
+      pointer-events: none;
 
-    &.hasFocus:not(.disabled) {
-
-      chorus,
-      verse {
-        position: relative;
-        pointer-events: none;
-
-        &::before {
-          content: "";
-          position: absolute;
-          left: -10px;
-          top: 0;
-          height: 100%;
-          width: 10px;
-          pointer-events: all;
-        }
+      &::before {
+        content: "";
+        position: absolute;
+        left: -18px;
+        top: calc(50% - 7px);
+        color: grey;
+        font-size: 14px;
+        line-height: 14px;
+        pointer-events: all;
       }
 
-      verse::before {
+      &.verse::before {
+        content: "→";
         cursor: e-resize;
       }
 
-      chorus::before {
+      &.chorus::before {
+        content: "←";
         cursor: w-resize;
+        left: -20px;
       }
     }
   }
 
-  .toggler {
-    cursor: row-resize;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    height: .4em;
-    display: flex;
-    align-items: center;
-    z-index: 999;
+  repeat {
+    pointer-events: none;
 
-    &::before {
-      content: "";
-      display: block;
-      height: 1px;
-      width: 50%;
-      background: rgba(0, 0, 0, 0.25);
-    }
-
-    &.merge {
-      cursor: ns-resize;
-      height: 1em;
+    &::after {
+      pointer-events: all;
+      cursor: url('@/assets/cross.png') 8 8, auto;
     }
   }
+}
 
-  trix-editor:not(.hasSelection)+div .floating-toolbar {
-    display: none;
+.toggler {
+  cursor: row-resize;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: .4em;
+  display: flex;
+  align-items: center;
+  z-index: 999;
+
+  &::before {
+    content: "";
+    display: block;
+    height: 1px;
+    width: 50%;
+    background: rgba(0, 0, 0, 0.25);
   }
 
-  .floating-toolbar {
-    position: absolute;
-    margin-top: -5px;
-    width: max-content;
-    transform: translate(-50%, -100%);
-    border-radius: 25px;
-    box-shadow: 2px 2px 10px -5px black;
-    z-index: 2;
+  &.merge {
+    cursor: ns-resize;
+    height: 1em;
+  }
+}
 
-    button {
-      width: 25px;
-      height: 25px;
-      border-width: 1px;
-      margin: 0;
-      background: white;
-      font-weight: inherit;
+trix-editor:not(.hasSelection)+div .floating-toolbar {
+  display: none;
+}
 
-      x2,
-      x3 {
-        &::after {
-          display: none;
-        }
+.floating-toolbar {
+  position: absolute;
+  margin-top: -5px;
+  width: max-content;
+  transform: translate(-50%, -100%);
+  border-radius: 25px;
+  box-shadow: 2px 2px 10px -5px black;
+  z-index: 2;
+
+  button {
+    width: 25px;
+    height: 25px;
+    border-width: 1px;
+    margin: 0;
+    background: white;
+    font-weight: inherit;
+
+    x2,
+    x3 {
+      &::after {
+        display: none;
       }
+    }
 
-      &:first-child {
-        border-top-left-radius: 25px;
-        border-bottom-left-radius: 25px;
-      }
+    &:first-child {
+      border-top-left-radius: 25px;
+      border-bottom-left-radius: 25px;
+    }
 
-      &:last-child {
-        border-top-right-radius: 25px;
-        border-bottom-right-radius: 25px;
-      }
+    &:last-child {
+      border-top-right-radius: 25px;
+      border-bottom-right-radius: 25px;
+    }
 
-      &.trix-active {
-        background: #CCC;
-      }
+    &.trix-active {
+      background: #CCC;
     }
   }
 }

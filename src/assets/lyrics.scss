@@ -16,72 +16,65 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 *****/
 
-chorus,
-verse {
+section {
   display: block;
   margin-bottom: 1em;
 }
 
-chorus {
+section.chorus {
   border-left: 2px solid #999;
   padding-left: 0.5em;
 }
 
-bass {
+voice.bass {
   font-weight: bold;
 }
 
-tenor {
-  background-color: #DDD;
+voice.tenor {
+  background-color: #ddd;
 }
 
-alto {
+voice.alto {
   text-decoration: underline;
 }
 
-soprano {
+voice.soprano {
   font-style: italic;
 }
 
-bass,
-tenor,
-alto,
-soprano {
+voice {
   display: inline;
 }
 
-x2, x3, x4, x5 {
+repeat {
   display: inline-block;
   position: relative;
-  margin-right: 1.5ch;
-  &::after {
+  margin-right: .75em;
+  margin-left: .25em;
+  text-decoration: inherit;
+  &::before {
+    content: "";
     position: absolute;
-    display: flex;
-    height: calc(100% - 10px);
     top: 5px;
-    left: 100%;
-    margin-left: .5ch;
-    padding-left: .2ch;
-    color: gray;
-    font-size: .8em;
+    right: calc(100% + .2em);
+    height: calc(100% - 10px);
+    border-right: 1px solid lightgrey;
+  }
+  &::after {
+    content: attr(class);
+    position: absolute;
+    top: 5px;
+    left: calc(100% + .2em);
+    height: calc(100% - 10px);
     border-left: 1px solid lightgrey;
+    display: flex;
     align-items: center;
-    letter-spacing: -.1ch;
+    padding-left: .1em;
+    color: gray;
+    font-size: 0.8em;
+    letter-spacing: -0.1ch;
     font-weight: normal;
     font-style: normal;
     text-decoration: none;
-    background: transparent;
   }
-}
-x2::after {
-  content:"2";
-}
-x3::after {
-  content:"3";
-}
-x4::after {
-  content:"4";
-}
-x5::after {
-  content:"5";
 }
