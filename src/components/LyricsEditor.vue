@@ -48,14 +48,6 @@ export default {
     modelValue: {
       type: String,
       default: "",
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-    noPopup: {
-      type: Boolean,
-      default: false,
     }
   },
   data() {
@@ -82,7 +74,7 @@ export default {
         valid_elements: "br,section[!class],repeat[!class],voice[!class]",
         custom_elements: "section,repeat,~voice",
         fixed_toolbar_container: `#toolbar-${uuid}`,
-        toolbar: "bass tenor alto soprano | x1 x2 x3 x4 x5 | removeformat | update",
+        toolbar: "bass tenor alto soprano | x1 x2 x3 x4 x5 | removeformat",
         formats: {
           removeformat: { selector: 'repeat,voice', remove: 'all', deep: true },
           section: { block: "section", attributes: { class: '%value' } },
@@ -91,13 +83,6 @@ export default {
         },
         setup: (editor) => {
           this.editor = editor
-
-          editor.ui.registry.addButton("update", {
-            text: "update",
-            onAction:() => {
-              this.updateToNewForm()
-            }
-          })
 
           for (const name of LyricsElements.voice) {
             editor.ui.registry.addToggleButton(name, {
@@ -173,19 +158,6 @@ export default {
       } else if (editor && e.target?.tagName == 'REPEAT') {
         editor.formatter.remove("repeat", { value: e.target.className }, e.target)
       }
-    },
-    updateToNewForm() {
-      let lyrics = this.modelValue
-
-      for (const type in LyricsElements) {
-        for (const el of LyricsElements[type]) {
-          lyrics = lyrics.replaceAll(`<${el}>`, `<${type} class="${type == 'repeat' ? el.slice(-1) : el}">`)
-          lyrics = lyrics.replaceAll(`</${el}>`, `</${type}>`)
-        }
-      }
-
-      console.log(lyrics)
-      this.value = lyrics
     }
   }
 }
