@@ -179,7 +179,7 @@ export default {
 
       for (const type in LyricsElements) {
         for (const el of LyricsElements[type]) {
-          lyrics = lyrics.replaceAll(`<${el}>`, `<${type} class="${el}">`)
+          lyrics = lyrics.replaceAll(`<${el}>`, `<${type} class="${type == 'repeat' ? el.slice(-1) : el}">`)
           lyrics = lyrics.replaceAll(`</${el}>`, `</${type}>`)
         }
       }
