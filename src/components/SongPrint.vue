@@ -172,10 +172,6 @@ export default {
         margin-bottom: 0.5em;
       }
     }
-
-    .translation {
-      white-space: pre-line;
-    }
   }
 }
 </style>
