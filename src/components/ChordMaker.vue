@@ -22,11 +22,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       {{ $t(`chord`) }}
       <span v-if="valid" id="chordName">
         <template v-if="note">
-          {{ $t(`note.${note}`)+' ' }}
+          {{ $t(`note.${note}`) + ' ' }}
         </template>
         <template v-for="is, qualifier in qualifiers" :key="qualifier">
           <template v-if="is">
-            {{ (qualifier == 'add9' && qualifiers.minor ? ' ' : '') + $t(`short.${ qualifier }`) }}
+            {{ (qualifier == 'add9' && qualifiers.minor ? ' ' : '') + $t(`short.${qualifier}`) }}
           </template>
         </template>
       </span>
@@ -37,7 +37,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         <h3>{{ $t(name) }}</h3>
         <label v-for="interval, qualifier of intervals" :key="interval" :class="qualifier">
           <input type="radio" :name="name" :value="{ ...chord, [name]: interval }" v-model="chord"
-            :disabled="!possible({ ...chord, [name]: interval })" @change="$emit('change')" />
+            @change="$emit('change')" />
           <span>{{ $t(qualifier) }}</span>
         </label>
       </div>
@@ -90,7 +90,7 @@ export default {
         major: third == Chords.third.major,
         sus2: third == Chords.third.sus2,
         sus4: third == Chords.third.sus4,
-        minor7: seventh == Chords.seventh.minor,
+        minor7: seventh == Chords.seventh.minor && nineth != Chords.nineth.major,
         major7: seventh == Chords.seventh.major,
         add9: !seventh && nineth == Chords.nineth.major,
         major9: nineth == Chords.nineth.major,
@@ -99,16 +99,8 @@ export default {
       }
     },
     valid() {
-      return this.chord.third && this.chord.fifth && this.possible(this.chord)
+      return this.chord.third && this.chord.fifth
     }
-  },
-  methods: {
-    possible({ third, fifth, seventh, nineth }) {
-      return this.size == 0
-        || ((!third || !fifth || fifth - third == 3 || fifth - third == 4 || third == Chords.third.sus2 || third == Chords.third.sus4)
-          && (!fifth || !seventh || seventh - fifth == 3 || seventh - fifth == 4)
-          && (!seventh || !nineth || nineth - seventh == 3 || nineth - seventh == 4))
-    },
   }
 }
 </script>
@@ -141,14 +133,15 @@ export default {
         display: block;
         font-weight: normal;
         line-height: 1.2em;
+
         &.perfect {
           line-height: 2.4em;
         }
+
         &.minor:nth-child(3) {
           margin-top: 1.2em;
         }
       }
     }
   }
-}
-</style>
+}</style>
