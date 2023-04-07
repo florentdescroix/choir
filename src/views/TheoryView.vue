@@ -51,7 +51,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         {{ $t('interval.0') }}
       </label>
     </div>
-    <div v-for="interval of 21" :key="interval">
+    <div v-for="interval of 23" :key="interval">
       <label>
         <input type="checkbox" :value="interval" v-model="selectedIntervals" @mouseup="disableMode"
           @change="selectedIntervals.sort((a, b) => a * 1 - b * 1)" />
