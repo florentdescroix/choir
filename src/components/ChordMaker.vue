@@ -90,7 +90,7 @@ export default {
         major: third == Chords.third.major,
         sus2: third == Chords.third.sus2,
         sus4: third == Chords.third.sus4,
-        minor7: seventh == Chords.seventh.minor && nineth != Chords.nineth.major,
+        minor7: seventh == Chords.seventh.minor,
         major7: seventh == Chords.seventh.major,
         add9: !seventh && nineth == Chords.nineth.major,
         major9: nineth == Chords.nineth.major,
