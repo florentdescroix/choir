@@ -27,8 +27,6 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
     </template>
   </div>
 
-  <StickerBackground />
-
   <header>
     <div class="left">
       <router-link id="mainTitle" :to="{ name: 'home' }">
@@ -104,12 +102,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 </template>
 
 <script>
-import StickerBackground from './components/StickerBackground.vue'
 import TagsEditor from './components/TagsEditor.vue'
 
 export default {
   name: 'App',
-  components: { StickerBackground, TagsEditor },
+  components: { TagsEditor },
   data() {
     return {
       songs: [],
