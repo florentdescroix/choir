@@ -137,9 +137,9 @@ export default {
         }
       }
 
-      &:hover,
-      &.hover {
-        background: linear-gradient(0deg, #f5f5f5, var(--blue));
+      &:hover {
+        background: linear-gradient(180deg, #f5f5f5, var(--blue));
+        color: white;
       }
 
     }
@@ -165,9 +165,8 @@ export default {
         box-shadow: inset 0px -1px 1px rgba(255, 255, 255, 0.4), 0 1px 0px rgba(0, 0, 0, 0.8), 0 2px 2px rgba(0, 0, 0, 0.4), 0 -1px 0px #000;
       }
 
-      &:hover,
       &.hover {
-        background: linear-gradient(0deg, #333, var(--blue));
+        background: linear-gradient(180deg, #333, var(--blue));
       }
     }
 
@@ -201,27 +200,27 @@ export default {
     }
 
     .bass {
-      background: rgba(103, 58, 183, 0.75);
+      background: rgba(103, 58, 183, 0.5);
     }
 
     .baritone {
-      background: rgba(33, 148, 242, 0.75);
+      background: rgba(33, 148, 242, 0.5);
     }
 
     .tenor {
-      background: rgba(76, 175, 80, 0.75);
+      background: rgba(76, 175, 80, 0.5);
     }
 
     .alto {
-      background: rgba(255, 193, 7, 0.75);
+      background: rgba(255, 193, 7, 0.5);
     }
 
     .mezzo {
-      background: rgba(255, 87, 34, 0.75);
+      background: rgba(255, 87, 34, 0.5);
     }
 
     .soprano {
-      background: rgba(233, 30, 99, 0.75);
+      background: rgba(233, 30, 99, 0.5);
     }
   }
 }
