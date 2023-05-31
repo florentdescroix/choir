@@ -137,7 +137,7 @@ export default {
         }
       }
 
-      &:hover {
+      &.hover {
         background: linear-gradient(180deg, #f5f5f5, var(--blue));
         color: white;
       }
