@@ -44,8 +44,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       </div>
 
       <template v-for="part, i in tabs" :key="i">
-        <component v-if="tab === part" :is="tab == 'lyrics' ? 'LyricsEditor' : 'TextEditor'" class="content"
-          v-model="song[part]" :disabled="disabled" :placeholder="$t(part)" />
+        <LyricsEditor v-if="tab === part" class="content" v-model="song[part]" :disabled="disabled" :placeholder="$t(part)" />
       </template>
 
     </div>
@@ -99,7 +98,6 @@ import LinksEditor from './LinksEditor.vue'
 import TagsEditor from "./TagsEditor.vue"
 import HelpBubble from "./HelpBubble.vue"
 
-
 export default {
   name: "songEditor",
   inheritAttrs: false,
@@ -116,7 +114,7 @@ export default {
       tabs: ['lyrics', 'phonetic', 'translation'],
       tab: 'lyrics'
     }
-  },
+  }
 }
 </script>
 
