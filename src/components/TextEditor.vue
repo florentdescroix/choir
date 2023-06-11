@@ -46,9 +46,7 @@ export default {
   },
   computed: {
     text: {
-      get() {
-        return this.modelValue
-      },
+      get() { return this.modelValue },
       set(value) { this.$emit('update:modelValue', value) },
     }
   },
