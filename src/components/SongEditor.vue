@@ -111,7 +111,7 @@ export default {
   mixins: [deepVModel('song', new Song())],
   data() {
     return {
-      tabs: ['lyrics', 'phonetic', 'translation'],
+      tabs: ['lyrics', 'translation', 'phonetic'],
       tab: 'lyrics'
     }
   }
