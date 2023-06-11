@@ -18,38 +18,42 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 <template>
   <Teleport to="#pageTitle">
-    <TextEditor id="song-title" v-model="song.title" :disabled="disabled" :singleLine="true"
-      :placeholder="$t('title')" />
+    <TextEditor id="song-title" v-model="song.title" :disabled="disabled" :singleLine="true" :placeholder="$t('title')" />
   </Teleport>
 
-  <div class="song">
-    <TextEditor v-if="!disabled || song.description" id="song-description" v-model="song.description"
-      :disabled="disabled" :placeholder="$t('description')" />
-    <div class="body">
-      <div id="song-lyrics">
+  <TextEditor v-if="!disabled || song.description" id="song-description" v-model="song.description" :disabled="disabled"
+    :placeholder="$t('description')" />
+
+  <div class="body">
+    <div class="parts">
+
+      <div class="titles">
+        <template v-for="part, i in tabs" :key="i">
+          <h3 class="title" v-if="!disabled || song[part].length > 0" @click="tab = part"
+            :class="{ active: part == tab }">
+            {{ $t(part) }}
+          </h3>
+        </template>
         <h3>
-          {{ $t('lyrics') }}
-          <HelpBubble v-if="!disabled" :modelValue="$t('help.lyrics')" />
+          <HelpBubble v-if="!disabled">
+            <ul>
+              <li v-for="(n, i) in 3" :key="i">{{ $t(`help.lyrics[${i}]`) }}</li>
+            </ul>
+          </HelpBubble>
         </h3>
-        <LyricsEditor v-model="song.lyrics" :disabled="disabled" :placeholder="$t('lyrics')" />
       </div>
-      <div v-if="!disabled || song.phonetic" id="song-phonetic">
-        <h3>
-          {{ $t('phonetic') }}
-        </h3>
-        <LyricsEditor v-model="song.phonetic" :disabled="disabled" :placeholder="$t('phonetic')" noPopup />
-      </div>
-      <div v-if="!disabled || song.translation" id="song-translation">
-        <h3>
-          {{ $t('translation') }}
-        </h3>
-        <LyricsEditor v-model="song.translation" :disabled="disabled" :placeholder="$t('translation')" noPopup />
-      </div>
+
+      <template v-for="part, i in tabs" :key="i">
+        <component v-if="tab === part" :is="tab == 'lyrics' ? 'LyricsEditor' : 'TextEditor'" class="content"
+          v-model="song[part]" :disabled="disabled" :placeholder="$t(part)" />
+      </template>
+
     </div>
   </div>
 
   <Teleport to="#aside">
-    <label v-if="!disabled || song.parent" id="songParent">
+
+    <label v-if="!disabled || song.parent" id="song-parent">
       <h3 class="title">{{ $t('child_of') }} : </h3>
       <select v-if="!disabled" v-model="song.parent">
         <option value="">{{ $t('none') }}</option>
@@ -60,6 +64,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       <span v-else class="title">{{ song.parent }}</span>
       <hr />
     </label>
+
     <div v-if="!disabled || song.links.length > 0" id="song-links">
       <h3 class="title">
         {{ $t('listen') }}
@@ -67,6 +72,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       </h3>
       <LinksEditor v-model="song.links" :disabled="disabled" />
     </div>
+
     <div id="song-voices">
       <template v-for="voice, voiceName in song.voices" :key="voiceName">
         <template v-if="!disabled || voice.note">
@@ -75,10 +81,12 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         </template>
       </template>
     </div>
-    <hr v-if="!disabled || song.tags.length > 0" />
-    <TagsEditor id="song-tags" v-model="song.tags" @click="$root.addSearchTag($event)" :disabled="disabled" clickable />
-  </Teleport>
 
+    <hr v-if="!disabled || song.tags.length > 0" />
+
+    <TagsEditor id="song-tags" v-model="song.tags" @click="$root.addSearchTag($event)" :disabled="disabled" clickable />
+
+  </Teleport>
 </template>
 
 <script>
@@ -94,18 +102,21 @@ import HelpBubble from "./HelpBubble.vue"
 
 export default {
   name: "songEditor",
+  inheritAttrs: false,
   components: { LyricsEditor, LinksEditor, VoiceEditor, TextEditor, TagsEditor, HelpBubble },
   props: {
     disabled: {
       type: Boolean,
       default: true
-    },
-    teleport: {
-      type: Boolean,
-      default: true
-    },
+    }
   },
-  mixins: [deepVModel('song', new Song())]
+  mixins: [deepVModel('song', new Song())],
+  data() {
+    return {
+      tabs: ['lyrics', 'phonetic', 'translation'],
+      tab: 'lyrics'
+    }
+  },
 }
 </script>
 
@@ -118,7 +129,7 @@ export default {
 }
 
 aside {
-  #songParent {
+  #song-parent {
     select {
       text-transform: capitalize;
     }
@@ -130,33 +141,46 @@ aside {
   }
 }
 
-.song {
+#song {
   #song-description {
     display: grid;
     width: fit-content;
     margin: auto;
-    font-family: Raleway, sans-serif;
     font-style: italic;
     text-align: justify;
-    outline: 0.1mm solid black;
-    padding: 1mm 2mm;
+    outline: 1px solid black;
+    padding: 4px 8px;
   }
 
   .body {
-    text-align: center;
-
-    #song-lyrics,
-    #song-phonetic,
-    #song-translation {
-      display: inline-block;
-      text-align: left;
-      vertical-align: top;
-      min-width: var(--min-col-width);
-      margin: 0 auto;
-      padding-left: 10px;
-
-      h3 {
+    .parts {
+      .titles {
         text-align: center;
+        margin-bottom: 20px;
+
+        h3 {
+          margin: none;
+          display: inline-block;
+          cursor: pointer;
+        }
+
+        .title {
+          margin-left: 20px;
+          margin-right: 20px;
+
+          &:not(.active) {
+            opacity: .5;
+          }
+
+          &.active,
+          &:hover {
+            border-bottom: 2px solid currentColor;
+          }
+        }
+      }
+
+      .content {
+        margin: auto;
       }
     }
   }

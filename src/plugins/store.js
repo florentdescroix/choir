@@ -16,6 +16,7 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <https://www.gnu.org/licenses/>
 *****/
 
+import { reactive } from 'vue'
 import PouchDB from 'pouchdb'
 PouchDB.plugin(find)
 
@@ -23,30 +24,37 @@ function createStore(url, name) {
 
   const db = new PouchDB(url.href + name, { skip_setup: true })
 
-  function login(name, password) {
-    return logged("POST", { name, password })
-  }
-
-  async function logout() {
-    return logged("DELETE")
-  }
-
-  async function logged(method = "GET", body = undefined) {
-    let resp = await fetch(url + "_session",
+  async function exec(method, path, body) {
+    let resp = await fetch(url + path,
       {
+        method,
         headers: {
           'Content-Type': 'application/json',
           'accept': 'application/json'
         },
         credentials: 'include',
-        method,
         body: body ? JSON.stringify(body) : body
       })
-    if (!resp.ok) {
-      throw (await resp.json())
-    }
-    return resp.json()
+    return await resp.json()
   }
+
+  async function login(name, password) {
+    const resp = await exec("POST", "_session", { name, password })
+    if (resp.error) {
+      throw resp
+    }
+    this.logged = true
+  }
+
+  async function logout() {
+    const resp = await exec("DELETE", "_session")
+    if (resp.error) {
+      throw resp
+    }
+    this.logged = false
+  }
+
+
 
   async function getAll(full = false) {
     let response
@@ -82,16 +90,19 @@ function createStore(url, name) {
   }
 
   return {
-    get,
-    getAll,
-    upsert,
-    remove,
-    login,
-    logout,
-    logged,
-    install(app) {
-      const store = this
+    async install(app) {
+      const store = reactive({
+        get,
+        getAll,
+        upsert,
+        remove,
+        login,
+        logout,
+        logged: false,
+      })
       app.config.globalProperties.$store = store
+      const resp = await exec("GET", "_session")
+      store.logged = resp?.userCtx?.name !== null
     }
   }
 }

@@ -8,7 +8,7 @@ module.exports = defineConfig({
       .tap(options => {
         options.compilerOptions = {
           ...options.compilerOptions,
-          isCustomElement: tag => ['trix-editor'].includes(tag)
+          isCustomElement: tag => tag == 'voice' || tag == 'repeat'
         }
         return options
       })

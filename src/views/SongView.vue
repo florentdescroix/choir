@@ -20,19 +20,19 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
   <Teleport to="#actions">
     <template v-if="editable">
       <HelpBubble is="button" class="material-symbols-outlined green" @click="save" :modelValue="$t('help.save')">
-        save
+        <template #icon><img src="@/assets/icons/save.svg"/></template>
       </HelpBubble>
       <HelpBubble v-if="id != 'new'" is="button" class="material-symbols-outlined red" @click="remove"
         :modelValue="$t('help.remove')">
-        delete
+        <template #icon><img src="@/assets/icons/delete.svg"/></template>
       </HelpBubble>
       <HelpBubble is="button" class="material-symbols-outlined blue" @click="cancel" :modelValue="$t('help.cancel')">
-        close
+        <template #icon><img src="@/assets/icons/close.svg"/></template>
       </HelpBubble>
     </template>
     <template v-else>
       <HelpBubble is="button" class="material-symbols-outlined blue" @click="edit" :modelValue="$t('help.edit')">
-        edit
+        <template #icon><img src="@/assets/icons/edit.svg"/></template>
       </HelpBubble>
     </template>
   </Teleport>

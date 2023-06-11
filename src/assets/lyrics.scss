@@ -18,7 +18,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 section {
   display: block;
-  margin-bottom: 1em;
+  &:not(:last-child) {
+    margin-bottom: .75em;
+  }
 }
 
 section.chorus {
@@ -49,14 +51,14 @@ voice {
 repeat {
   display: inline-block;
   position: relative;
-  margin-right: .75em;
-  margin-left: .25em;
+  margin-right: 0.75em;
+  margin-left: 0.25em;
   text-decoration: inherit;
   &::before {
     content: "";
     position: absolute;
     top: 5px;
-    right: calc(100% + .2em);
+    right: calc(100% + 0.2em);
     height: calc(100% - 10px);
     border-right: 1px solid lightgrey;
   }
@@ -64,12 +66,12 @@ repeat {
     content: attr(class);
     position: absolute;
     top: 5px;
-    left: calc(100% + .2em);
+    left: calc(100% + 0.2em);
     height: calc(100% - 10px);
     border-left: 1px solid lightgrey;
     display: flex;
     align-items: center;
-    padding-left: .1em;
+    padding-left: 0.1em;
     color: gray;
     font-size: 0.8em;
     letter-spacing: -0.1ch;

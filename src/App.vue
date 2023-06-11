@@ -38,7 +38,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
     </div>
     <div class="right">
       <div id="buttons">
-        <span v-show="logged" id="actions">
+        <span v-show="$store.logged" id="actions">
         </span>
       </div>
     </div>
@@ -56,18 +56,17 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
       </div>
       <div id="songList">
         <label v-if="$route.name == 'print'" class="title select_all" clickable>
-          {{ allChecked? $t('unselect_all'): $t('select_all') }} <input type="checkbox" v-model="allChecked" />
+          {{ allChecked ? $t('unselect_all') : $t('select_all') }} <input type="checkbox" v-model="allChecked" />
         </label>
         <div v-for="song in filteredSongs" :key="song._id" :class="{ title: true, child: !!song.parent }">
           <input v-if="$route.name == 'print'" type="checkbox" :value="song._id" v-model="selectedSongs" />
-          <router-link :to="{ name: 'song', params: { id: song._id } }"
-            :class="{ active: song._id == $route.params.id }">
+          <router-link :to="{ name: 'song', params: { id: song._id } }" :class="{ active: song._id == $route.params.id }">
             {{ song._id }}
           </router-link>
         </div>
       </div>
       <footer>
-        <router-link v-if="logged" :to="{ name: 'song', params: { id: 'new' } }">
+        <router-link v-if="$store.logged" :to="{ name: 'song', params: { id: 'new' } }">
           <button>{{ $t('new_song') }}</button>
         </router-link>
         <router-link :to="{ name: 'print' }">
@@ -76,7 +75,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
         <router-link :to="{ name: 'theory' }">
           <button>{{ $t('theory') }}</button>
         </router-link>
-        <button @click="logged ? logout() : login()">{{ logged? $t('logout'): $t('login')}}</button>
+        <LoginButton />
       </footer>
     </nav>
 
@@ -103,16 +102,16 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 <script>
 import TagsEditor from './components/TagsEditor.vue'
+import LoginButton from './components/LoginButton.vue'
 
 export default {
   name: 'App',
-  components: { TagsEditor },
+  components: { TagsEditor, LoginButton },
   data() {
     return {
       songs: [],
       selectedSongs: [],
       tagList: [],
-      logged: false,
       search: "",
       tagSearch: [],
       loading: false
@@ -127,8 +126,6 @@ export default {
     this.$router.afterEach(() => {
       this.reloadSongs()
     })
-    let resp = await this.$store.logged()
-    this.logged = resp.userCtx.name != null
   },
   computed: {
     sortedSongs() {
@@ -174,26 +171,6 @@ export default {
     },
     addSearchTag(tag) {
       this.$refs.tagSearch.addNewTag(tag)
-    },
-    async login() {
-      let login = prompt(this.$t('prompt.login'))
-      if (login) {
-        login = login.toLocaleLowerCase().replaceAll(" ", "")
-        let password = prompt(this.$t('prompt.password'))
-        if (password) {
-          password = password.toLocaleLowerCase().replaceAll(" ", "")
-          try {
-            await this.$store.login(login, password)
-            this.logged = true
-          } catch (err) {
-            alert(this.$t(`error.${err.error}`))
-          }
-        }
-      }
-    },
-    async logout() {
-      await this.$store.logout()
-      this.logged = false
     }
   }
 }
@@ -232,6 +209,13 @@ html {
 a {
   color: var(--text-color);
   text-decoration: none;
+}
+
+h1,
+h2,
+h3 {
+  font-family: monospace, serif;
+  letter-spacing: 0.05em;
 }
 
 .clearfix {
@@ -306,7 +290,7 @@ label {
       color: white;
     }
 
-    #mainTitle {
+    #mainTitle h1 {
       font-family: cursive;
     }
 
@@ -344,10 +328,6 @@ label {
         margin: 0;
         text-align: center;
       }
-    }
-
-    >nav,
-    >aside {
 
       >footer {
         display: flex;

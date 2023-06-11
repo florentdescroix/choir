@@ -17,20 +17,28 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 -->
 
 <template>
-  <component :is="is" :class="$slots.default ? '' : 'helper'" @mouseenter="enter" @mouseleave="leave" v-bind="$attrs">
-    <template v-if="$slots.default">
-      <slot></slot>
+  <component :is="is" :class="$slots.icon ? '' : 'helper'" @mouseenter="enter" @mouseleave="leave" v-bind="$attrs">
+    <template v-if="$slots.icon">
+      <slot name="icon"></slot>
     </template>
     <template v-else>
-      ?
+      <img src="@/assets/icons/help.svg" />
     </template>
   </component>
   <Teleport to="body">
-    <div v-if="open" id="tooltip" ref="tooltip" :style="{ top: top + 'px', left: left + 'px', width: width + 'px' }" v-html="modelValue"></div>
+    <div v-if="open" id="tooltip" ref="tooltip" :style="{ top: top + 'px', left: left + 'px', width: width + 'px' }">
+      <template v-if="$slots.default">
+        <slot></slot>
+      </template>
+      <template v-else>
+        {{ modelValue }}
+      </template>
+    </div>
   </Teleport>
 </template>
 
 <script>
+
 export default {
   name: "HelpBubble",
   inheritAttrs: false,
@@ -55,7 +63,7 @@ export default {
   },
   methods: {
     async enter(e) {
-      if (this.modelValue) {
+      if (this.modelValue || this.$slots.default) {
         this.open = true
         this.width = 300
         await this.$nextTick()
@@ -92,18 +100,14 @@ export default {
 
 <style lang="scss">
 .helper {
-  display: inline-block;
-  position: relative;
-  vertical-align: middle;
-  font-size: 14px;
-  text-align: center;
-  line-height: 16px;
-  width: 20px;
-  height: 20px;
-  border-style: solid;
-  border-width: 2px;
-  border-radius: 20px;
   cursor: help;
+  width: 24px;
+  position: relative;
+
+  img {
+    position: absolute;
+    margin-left: 5px;
+  }
 }
 
 #tooltip {
@@ -118,6 +122,7 @@ export default {
   border: 1px solid rgba(82, 83, 85, 0.25);
   border-radius: 3px;
   z-index: 999;
+
   ul {
     margin: 0;
     padding-left: 20px;

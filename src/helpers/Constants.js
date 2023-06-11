@@ -19,11 +19,13 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 export const Notes = [
   'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'
 ]
+const Whites = Notes.filter(el => !el.includes('#'))
+
 class Voice {
   constructor(from, to) {
     this.from = from
     this.to = to
-    this.length = 'CDEFGAB'.length * (to.slice(-1) - from.slice(-1)) - 'CDEFGAB'.indexOf(from.slice(0, -1)) + 'CDEFGAB'.indexOf(to.slice(0, -1))
+    this.length = Whites.length * (to.slice(-1) - from.slice(-1)) - Whites.indexOf(from.slice(0, -1)) + Whites.indexOf(to.slice(0, -1))
   }
 }
 

@@ -17,9 +17,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 -->
 
 <template>
-  <Teleport to="#aside">
+  <!-- <Teleport to="#aside"> -->
     <h3 v-html="$t('help.welcome')"></h3>
-  </Teleport>
+  <!-- </Teleport> -->
 </template>
 
 <script>
@@ -35,4 +35,7 @@ export default {
 </script>
 
 <style lang="scss">
+main#home {
+  pointer-events: none;
+}
 </style>

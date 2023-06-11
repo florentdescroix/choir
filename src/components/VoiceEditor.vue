@@ -20,8 +20,9 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
   <div class="voice">
     <h3 class="title">
       <voice :class="voiceName" @click="$emits('click', voiceName)">
-        {{ $t(voiceName) + ' ' }}
+        {{ $t(voiceName) }}
       </voice>
+      <span>&nbsp;</span>
       <span v-if="!disabled" class="note">
         <select v-model="voice.note">
           <option value="">{{ $t('none') }}</option>
@@ -88,6 +89,10 @@ export default {
 
 <style lang="scss">
 .voice {
+
+  .title {
+    font-weight: normal;
+  }
 
   .note {
     font-size: 0.8em;

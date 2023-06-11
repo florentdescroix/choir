@@ -26,50 +26,50 @@ html {
 }
 
 @mixin floatingMenu($side) {
+  position: fixed;
+  width: 360px;
+  transition: right 0.5s, left 0.5s;
+  @if $side == right {
+    right: -360px;
+  } @else {
+    left: -360px;
+  }
+
+  &::after {
     position: fixed;
-    width: 360px;
-    transition: right .5s, left .5s;
+    top: 50%;
+    opacity: 1;
+    font-size: 30px;
+    height: 40px;
+    width: 40px;
+    line-height: 40px;
+    transform: translateY(-50%);
+    background: lightgrey;
+    border-radius: 20px;
+    transition: right 0.5s, left 0.5s;
     @if $side == right {
-      right: -360px;
+      content: "←";
+      right: -25px;
+      text-align: left;
     } @else {
-      left: -360px
+      content: "→";
+      left: -25px;
+      text-align: right;
     }
+  }
 
-    &::after {
-      position: fixed;
-      top: 50%;
-      opacity: 1;
-      font-size: 30px;
-      height: 40px;
-      width: 40px;
-      line-height: 40px;
-      transform: translateY(-50%);
-      background: lightgrey;
-      border-radius: 20px;
-      transition: right .5s, left .5s;
-      @if $side == right {
-        content: "←";
-        right: -25px;
-        text-align: left;
-      } @else {
-        content: "→";
-        left: -25px;
-        text-align: right;
+  &:hover {
+    box-shadow: 0 0 10px grey;
+    @if $side == right {
+      right: 0;
+      &::after {
+        right: -40px;
       }
-    }
-
-    &:hover {
-      box-shadow: 0 0 10px grey;
-      @if $side == right {
-        right: 0;
-        &::after {
-          right: -40px;
-        }
-      } @else {
-        left: 0;
-        &::after {
-          left: -40px;
-        }
+    } @else {
+      left: 0;
+      &::after {
+        left: -40px;
       }
     }
   }
+}
