@@ -18,9 +18,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>
 
 <template>
   <label class="input-sizer" :data-value="text">
-    <input v-if="singleLine" v-model="text" :placeholder="$attrs.placeholder" type="text" size="1"
-      :disabled="disabled" />
-    <textarea v-else v-model="text" rows="1" :placeholder="$attrs.placeholder" :disabled="disabled"></textarea>
+    <input v-if="singleLine" v-model="text" :placeholder="placeholder" type="text" size="1" :disabled="disabled" />
+    <textarea v-else v-model="text" rows="1" :placeholder="placeholder" :disabled="disabled"></textarea>
   </label>
 </template>
 
@@ -40,22 +39,32 @@ export default {
     singleLine: {
       type: Boolean,
       default: false,
+    },
+    placeholder: {
+      type: String
     }
   },
   computed: {
     text: {
-      get() { return this.modelValue },
+      get() {
+        return this.modelValue
+      },
       set(value) { this.$emit('update:modelValue', value) },
     }
-  }
+  },
 }
 </script>
 
 <style lang="scss">
 .input-sizer {
-  display: inline-grid;
+  display: grid;
+  width: max-content;
   vertical-align: top;
   align-items: stretch;
+
+  ::placeholder {
+    color: #757575;
+  }
 
   &::after,
   input,
@@ -73,6 +82,7 @@ export default {
     padding: 0.25em;
     margin: 0;
     resize: none;
+    overflow: hidden;
     background: none;
     appearance: none;
     border: none;
