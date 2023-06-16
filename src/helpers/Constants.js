@@ -95,7 +95,7 @@ export const AudioExt = {
   mp3: "audio/mpeg",
   mp4: "audio/mp4",
   adts: "audio/aac",
-  agg: "audio/ogg",
+  ogg: "audio/ogg",
   webm: "audio/webm",
   caf: "audio/x-caf",
   flac: "audio/flac",
